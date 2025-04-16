@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Top Anime Movies</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      header,
+      footer {
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        padding: 1em;
+      }
+      nav {
+        background-color: #444;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        padding: 10px;
+      }
+      nav a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      nav a:hover {
+        text-decoration: underline;
+      }
+      .container {
+        padding: 20px;
+      }
+      .movies {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+      }
+      .movie {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+      .movie:hover {
+        transform: scale(1.05);
+      }
+      .movie img {
+        width: 100%;
+        height: auto;
+      }
+      .favorites,
+      .contact,
+      .signup {
+        margin-top: 30px;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      .modal-content {
+        background-color: white;
+        margin: 5% auto;
+        padding: 20px;
+        width: 90%;
+        max-width: 800px;
+        border-radius: 10px;
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+        position: relative;
+      }
+      #modalImage {
+        max-width: 200px;
+        height: auto;
+        border-radius: 10px;
+      }
+      .modal-details {
+        flex: 1;
+      }
+      .modal-details h2 {
+        margin-top: 0;
+      }
+      .close {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 28px;
+        font-weight: bold;
+        color: #ff0000;
+        cursor: pointer;
+      }
+      .close:hover {
+        color: #ff6347;
+        transform: scale(1.5);
+      }
+      .login-form {
+        max-width: 300px;
+        margin: 100px auto;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .login-form input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+      }
+      .login-form button {
+        padding: 10px 15px;
+        width: 100%;
+        background-color: #333;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      .hidden {
+        display: none;
+      }
+      form input,
+      form textarea {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+      form button {
+        background-color: #333;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button {
+        background-color: #9147ff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #772ce8;
+      }
+      #loading-message {
+        font-size: 18px;
+        text-align: center;
+        margin: 20px 0;
+      }
+      #search-input {
+        max-width: 500px;
+        padding: 10px;
+        border-radius: 10px;
+      }
+      .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 20px 0;
+      }
+      .pagination button {
+        padding: 8px 14px;
+        border-radius: 5px;
+        border: none;
+        background-color: #333;
+        color: white;
+        cursor: pointer;
+      }
+      .pagination button:hover {
+        background-color: #555;
+      }
+      .password-container {
+        position: relative;
+      }
+      .password-toggle {
+        position: absolute;
+        right: 10px;
+        top: 35px;
+        cursor: pointer;
+      }
+      .active-reaction {
+        background-color: #772ce8 !important;
+        transform: scale(1.05);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Top Anime Movies</h1>
+    </header>
+
+    <nav>
+      <a href="#" onclick="showSection('home')">Home</a>
+      <a href="#" onclick="showSection('favoritesSection')">Favorites</a>
+      <a href="#" onclick="showSection('contactSection')">Contact</a>
+      <a href="#" onclick="showSection('signupSection')">Sign Up</a>
+    </nav>
+
+    <div class="container">
+      <!-- Login Form -->
+      <div class="login-form" id="loginForm">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Username" />
+        <div class="password-container">
+          <input type="password" id="password" placeholder="Password" />
+          <span class="password-toggle" onclick="togglePassword('password')"
+            >👁️</span
+          >
+        </div>
+        <button onclick="login()">Login</button>
+        <p style="text-align: center; margin-top: 10px">
+          Don't have an account?
+          <a href="#" onclick="showSignupFromLogin()" style="color: #9147ff"
+            >Sign up</a
+          >
+        </p>
+      </div>
+
+      <!-- Main Content -->
+      <div id="mainContent" class="hidden">
+        <div id="home">
+          <div
+            style="
+              display: flex;
+              justify-content: flex-end;
+              margin-bottom: 20px;
+            "
+          >
+            <input
+              type="text"
+              id="search-input"
+              placeholder="Search movies..."
+            />
+            <button id="search-button" onclick="searchMovies()">Search</button>
+          </div>
+          <div class="movies" id="movie-list"></div>
+          <div class="pagination" id="pagination"></div>
+          <h2>Watch our Video</h2>
+          <iframe
+            width="100%"
+            height="315"
+            src="https://www.youtube.com/embed/ZMysDTDqK-k"
+            title="YouTube video"
+            frameborder="0"
+            allowfullscreen
+          ></iframe>
+        </div>
+
+        <div class="favorites hidden" id="favoritesSection">
+          <h2>Favorites</h2>
+          <div class="movies" id="favorites"></div>
+        </div>
+
+        <div class="contact hidden" id="contactSection">
+          <h2>Contact Us</h2>
+          <form
+            onsubmit="event.preventDefault(); alert('Thanks for reaching out!');"
+          >
+            <label for="name">Name</label>
+            <input type="text" id="name" required />
+            <label for="email">Email</label>
+            <input type="email" id="email" required />
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" />
+            <label for="comment">Comment</label>
+            <textarea id="comment" rows="5" required></textarea>
+            <button type="submit">Submit</button>
+          </form>
+        </div>
+
+        <div class="signup hidden" id="signupSection">
+          <h2>Sign Up</h2>
+          <form id="signupForm" onsubmit="event.preventDefault(); signUp();">
+            <label for="signup-email">Email</label>
+            <input type="email" id="signup-email" required />
+
+            <label for="signup-username">Username</label>
+            <input type="text" id="signup-username" required />
+
+            <div class="password-container">
+              <label for="signup-password">Password</label>
+              <input
+                type="password"
+                id="signup-password"
+                required
+                minlength="6"
+              />
+              <span
+                class="password-toggle"
+                onclick="togglePassword('signup-password')"
+                >👁️</span
+              >
+            </div>
+
+            <div class="password-container">
+              <label for="confirm-password">Confirm Password</label>
+              <input
+                type="password"
+                id="confirm-password"
+                required
+                minlength="6"
+              />
+              <span
+                class="password-toggle"
+                onclick="togglePassword('confirm-password')"
+                >👁️</span
+              >
+            </div>
+
+            <button type="submit">Sign Up</button>
+            <p style="text-align: center; margin-top: 10px">
+              Already have an account?
+              <a href="#" onclick="showLoginFromSignup()" style="color: #9147ff"
+                >Log in</a
+              >
+            </p>
+          </form>
+        </div>
+
+        <div class="modal" id="movieModal">
+          <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <img id="modalImage" src="" alt="Movie Image" />
+            <div class="modal-details">
+              <h2 id="modalTitle"></h2>
+              <p id="modalSynopsis"></p>
+              <button onclick="addToFavorites()">Add to Favorites</button>
+              <div style="margin-top: 15px">
+                <button onclick="likeMovie()" id="likeBtn">
+                  👍 Like (<span id="likeCount">0</span>)
+                </button>
+                <button
+                  onclick="dislikeMovie()"
+                  id="dislikeBtn"
+                  style="margin-left: 10px"
+                >
+                  👎 Dislike (<span id="dislikeCount">0</span>)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer><p>&copy; 2025 Anime Hub</p></footer>
+
+    <script>
+      let selectedMovie = null;
+      let allMovies = [];
+      let likeCounts = {};
+      let dislikeCounts = {};
+      let userReactions = {}; // Track user reactions { movieId: 'like'/'dislike' }
+      let currentPage = 1;
+      const moviesPerPage = 8;
+      let users = [];
+      let currentUser = null; // Track logged in user
+
+      async function fetchMovies() {
+        const movieList = document.getElementById("movie-list");
+        const searchBtn = document.getElementById("search-button");
+        const searchInput = document.getElementById("search-input");
+        movieList.innerHTML =
+          '<p id="loading-message">Loading movies, please wait...</p>';
+        searchBtn.disabled = true;
+        searchInput.disabled = true;
+
+        let page = 1;
+        try {
+          while (allMovies.length < 200) {
+            const res = await fetch(
+              `https://api.jikan.moe/v4/top/anime?type=movie&page=${page}`
+            );
+            const data = await res.json();
+            if (!data.data || data.data.length === 0) break;
+            allMovies = allMovies.concat(data.data);
+            page++;
+          }
+          displayMovies(allMovies, 1);
+          searchBtn.disabled = false;
+          searchInput.disabled = false;
+        } catch (error) {
+          movieList.innerHTML =
+            "<p>Error loading movies. Please try again later.</p>";
+          console.error("Fetch error:", error);
+        }
+      }
+
+      function displayMovies(movies, page = 1) {
+        const container = document.getElementById("movie-list");
+        const pagination = document.getElementById("pagination");
+        container.innerHTML = "";
+        pagination.innerHTML = "";
+
+        const start = (page - 1) * moviesPerPage;
+        const end = start + moviesPerPage;
+        const pageMovies = movies.slice(start, end);
+
+        pageMovies.forEach((movie) => {
+          const div = document.createElement("div");
+          div.className = "movie";
+          div.innerHTML = `<img src="${movie.images.jpg.image_url}" alt="${movie.title}"><p style="padding: 10px;">${movie.title}</p>`;
+          div.onclick = () => showModal(movie);
+          container.appendChild(div);
+        });
+
+        const totalPages = Math.ceil(movies.length / moviesPerPage);
+        for (let i = 1; i <= totalPages; i++) {
+          const btn = document.createElement("button");
+          btn.innerText = i;
+          if (i === page) btn.style.backgroundColor = "#772ce8";
+          btn.onclick = () => {
+            currentPage = i;
+            displayMovies(movies, currentPage);
+          };
+          pagination.appendChild(btn);
+        }
+      }
+
+      function searchMovies() {
+        const query = document
+          .getElementById("search-input")
+          .value.trim()
+          .toLowerCase();
+        const filtered = allMovies.filter((movie) =>
+          movie.title.toLowerCase().includes(query)
+        );
+        displayMovies(filtered, 1);
+      }
+
+      function showModal(movie) {
+        selectedMovie = movie;
+        const id = movie.mal_id;
+        document.getElementById("modalTitle").innerText = movie.title;
+        document.getElementById("modalImage").src = movie.images.jpg.image_url;
+        document.getElementById("modalSynopsis").innerText =
+          movie.synopsis || "No synopsis available.";
+
+        // Initialize counts if they don't exist
+        likeCounts[id] = likeCounts[id] || 0;
+        dislikeCounts[id] = dislikeCounts[id] || 0;
+
+        // Update display
+        document.getElementById("likeCount").innerText = likeCounts[id];
+        document.getElementById("dislikeCount").innerText = dislikeCounts[id];
+
+        // Highlight active reaction if user has reacted
+        const likeBtn = document.getElementById("likeBtn");
+        const dislikeBtn = document.getElementById("dislikeBtn");
+        likeBtn.classList.remove("active-reaction");
+        dislikeBtn.classList.remove("active-reaction");
+
+        if (currentUser) {
+          const reactionKey = `${currentUser.username}_${id}`;
+          if (userReactions[reactionKey] === "like") {
+            likeBtn.classList.add("active-reaction");
+          } else if (userReactions[reactionKey] === "dislike") {
+            dislikeBtn.classList.add("active-reaction");
+          }
+        }
+
+        document.getElementById("movieModal").style.display = "block";
+      }
+
+      function closeModal() {
+        document.getElementById("movieModal").style.display = "none";
+      }
+
+      function addToFavorites() {
+        if (!currentUser) {
+          alert("Please login to add favorites");
+          return;
+        }
+
+        const favContainer = document.getElementById("favorites");
+        const div = document.createElement("div");
+        div.className = "movie";
+        div.innerHTML = `<img src="${selectedMovie.images.jpg.image_url}" alt="${selectedMovie.title}"><p style="padding: 10px;">${selectedMovie.title}</p>`;
+        favContainer.appendChild(div);
+        closeModal();
+      }
+
+      function likeMovie() {
+        if (!currentUser) {
+          alert("Please login to react to movies");
+          return;
+        }
+
+        const id = selectedMovie.mal_id;
+        const reactionKey = `${currentUser.username}_${id}`;
+        const likeBtn = document.getElementById("likeBtn");
+        const dislikeBtn = document.getElementById("dislikeBtn");
+
+        // If already liked, remove the like
+        if (userReactions[reactionKey] === "like") {
+          likeCounts[id]--;
+          delete userReactions[reactionKey];
+          likeBtn.classList.remove("active-reaction");
+        }
+        // If disliked, switch to like
+        else if (userReactions[reactionKey] === "dislike") {
+          dislikeCounts[id]--;
+          likeCounts[id]++;
+          userReactions[reactionKey] = "like";
+          dislikeBtn.classList.remove("active-reaction");
+          likeBtn.classList.add("active-reaction");
+        }
+        // If no reaction, add like
+        else {
+          likeCounts[id]++;
+          userReactions[reactionKey] = "like";
+          likeBtn.classList.add("active-reaction");
+        }
+
+        document.getElementById("likeCount").innerText = likeCounts[id];
+        document.getElementById("dislikeCount").innerText = dislikeCounts[id];
+      }
+
+      function dislikeMovie() {
+        if (!currentUser) {
+          alert("Please login to react to movies");
+          return;
+        }
+
+        const id = selectedMovie.mal_id;
+        const reactionKey = `${currentUser.username}_${id}`;
+        const likeBtn = document.getElementById("likeBtn");
+        const dislikeBtn = document.getElementById("dislikeBtn");
+
+        // If already disliked, remove the dislike
+        if (userReactions[reactionKey] === "dislike") {
+          dislikeCounts[id]--;
+          delete userReactions[reactionKey];
+          dislikeBtn.classList.remove("active-reaction");
+        }
+        // If liked, switch to dislike
+        else if (userReactions[reactionKey] === "like") {
+          likeCounts[id]--;
+          dislikeCounts[id]++;
+          userReactions[reactionKey] = "dislike";
+          likeBtn.classList.remove("active-reaction");
+          dislikeBtn.classList.add("active-reaction");
+        }
+        // If no reaction, add dislike
+        else {
+          dislikeCounts[id]++;
+          userReactions[reactionKey] = "dislike";
+          dislikeBtn.classList.add("active-reaction");
+        }
+
+        document.getElementById("likeCount").innerText = likeCounts[id];
+        document.getElementById("dislikeCount").innerText = dislikeCounts[id];
+      }
+
+      function login() {
+        const user = document.getElementById("username").value;
+        const pass = document.getElementById("password").value;
+
+        if (user === "bob" && pass === "bobpass") {
+          currentUser = { username: "bob" };
+          document.getElementById("loginForm").classList.add("hidden");
+          document.getElementById("mainContent").classList.remove("hidden");
+          fetchMovies();
+        } else {
+          // Check if user exists in registered users
+          const foundUser = users.find(
+            (u) => u.username === user && u.password === pass
+          );
+          if (foundUser) {
+            currentUser = foundUser;
+            document.getElementById("loginForm").classList.add("hidden");
+            document.getElementById("mainContent").classList.remove("hidden");
+            fetchMovies();
+          } else {
+            alert("Incorrect login");
+          }
+        }
+      }
+
+      function signUp() {
+        const email = document.getElementById("signup-email").value;
+        const username = document.getElementById("signup-username").value;
+        const password = document.getElementById("signup-password").value;
+        const confirmPassword =
+          document.getElementById("confirm-password").value;
+
+        if (password !== confirmPassword) {
+          alert("Passwords don't match!");
+          return;
+        }
+
+        // Check if username already exists
+        if (users.some((u) => u.username === username)) {
+          alert("Username already exists!");
+          return;
+        }
+
+        // Check if email already exists
+        if (users.some((u) => u.email === email)) {
+          alert("Email already registered!");
+          return;
+        }
+
+        // Add new user
+        users.push({
+          email,
+          username,
+          password,
+        });
+
+        alert("Account created successfully! You can now log in.");
+        showLoginFromSignup();
+      }
+
+      function togglePassword(id) {
+        const input = document.getElementById(id);
+        if (input.type === "password") {
+          input.type = "text";
+        } else {
+          input.type = "password";
+        }
+      }
+
+      function showSignupFromLogin() {
+        document.getElementById("loginForm").classList.add("hidden");
+        document.getElementById("signupSection").classList.remove("hidden");
+        document.getElementById("mainContent").classList.remove("hidden");
+      }
+
+      function showLoginFromSignup() {
+        document.getElementById("signupSection").classList.add("hidden");
+        document.getElementById("loginForm").classList.remove("hidden");
+        document.getElementById("mainContent").classList.add("hidden");
+      }
+
+      function showSection(sectionId) {
+    const sections = ["home", "favoritesSection", "contactSection"];
+    sections.forEach((id) => document.getElementById(id).classList.add("hidden"));
+    document.getElementById(sectionId).classList.remove("hidden");
+
+    // Reset search input and display all movies when navigating to "Home"
+    if (sectionId === "home") {
+      const searchInput = document.getElementById("search-input");
+      searchInput.value = ""; // Clear the search input
+      displayMovies(allMovies, 1); // Display all movies
+    }
+  }
+    </script>
+  </body>
+</html>
