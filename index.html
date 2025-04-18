@@ -3,13 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Top Anime Movies</title>
+    <title>AniFlix</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
     <style>
       body {
-        font-family: Arial, sans-serif;
+        font-family: 'Poppins', sans-serif; /* Apply the font to the entire website */
         margin: 0;
         padding: 0;
-        background-color: #f4f4f4;
+        background: radial-gradient(circle at center, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1); /* Pinkish nebula gradient */
+        background-size: cover; /* Ensure the gradient covers the entire screen */
+        color: #fff; /* White text for contrast */
       }
       header,
       footer {
@@ -19,47 +24,156 @@
         padding: 1em;
       }
       nav {
-        background-color: #444;
+        background-color: #B8DAD9; /* Light blue color for the navigation bar */
         display: flex;
-        justify-content: center;
-        gap: 20px;
-        padding: 10px;
+        align-items: center;
+        justify-content: space-between; /* Align links to the left and search bar to the right */
+        padding: 10px 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
       }
+
       nav a {
-        color: white;
+        color: #333; /* Adjust text color for better contrast */
         text-decoration: none;
         font-weight: bold;
+        margin-right: 15px;
+        padding-right: 15px; /* Add padding to the right for spacing */
+        border-right: 1px solid #555; /* Add a vertical line to separate options */
+        transition: color 0.3s;
       }
+
+      nav a:last-child {
+        border-right: none; /* Remove the line for the last option */
+      }
+
       nav a:hover {
-        text-decoration: underline;
+        color: #9147ff; /* Highlight color on hover */
+      }
+
+      nav input[type="text"] {
+        padding: 10px; /* Add padding for better spacing */
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        max-width: 300px; /* Limit the width of the search bar */
+        margin-right: 10px; /* Add spacing between the input and the button */
+        box-sizing: border-box; /* Ensure padding is included in the width */
+      }
+
+      nav button {
+        padding: 10px 15px; /* Adjust padding for better alignment */
+        border-radius: 5px;
+        border: none;
+        background-color: #9147ff;
+        color: white;
+        cursor: pointer;
+        margin-left: 0; /* Remove unnecessary margin */
+      }
+
+      nav button:hover {
+        background-color: #772ce8;
+      }
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+      .dropdown-content {
+        position: absolute;
+        background-color: #222; /* Dark background for the dropdown */
+        min-width: 200px; /* Adjust the width of the dropdown */
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.5); /* Add a shadow for depth */
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #555; /* Add a border for better visibility */
+      }
+      .dropdown-content a {
+        color: #fff; /* White text for contrast */
+        text-decoration: none;
+        padding: 10px 15px; /* Add padding for better spacing */
+        border-radius: 5px; /* Rounded corners */
+        background-color: #333; /* Slightly lighter background for items */
+        transition: background-color 0.3s, transform 0.2s; /* Smooth hover effect */
+        cursor: pointer;
+      }
+      .dropdown-content a:hover {
+        background-color: #47fcff; /* Highlight color on hover */
+        transform: scale(1.05); /* Slight zoom effect on hover */
+      }
+      .dropdown-content.hidden {
+        display: none; /* Ensure the dropdown is completely hidden */
+        z-index: -1; /* Push it behind other elements */
+      }
+      .dropdown a {
+        color: black; /* Set the "Genres" link color to black */
+        text-decoration: none;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .dropdown-content a {
+      color: white; /* Set the text color to white */
+      }
+      .dropdown a:hover {
+        color: black; /* Highlight the "Genres" link on hover */
+      }
+      .hidden {
+        display: none !important; /* Ensure the element is completely hidden */
       }
       .container {
         padding: 20px;
       }
       .movies {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
+        grid-template-columns: repeat(5, 1fr); /* 5 movies per row */
+        gap: 10px; /* Add slight spacing between movies */
+        position: relative; /* Ensure the movie container is properly positioned */
+        z-index: 1; /* Set a higher z-index for the movie cards */
       }
       .movie {
-        background: white;
+        background: #222;
         border-radius: 10px;
         overflow: hidden;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        cursor: pointer;
-        transition: transform 0.2s;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s, box-shadow 0.3s;
+        position: relative; /* Ensure the movie cards are clickable */
+        z-index: 2; /* Ensure movie cards are above other elements */
+        cursor: pointer; /* Add this line */
       }
       .movie:hover {
         transform: scale(1.05);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
       }
       .movie img {
         width: 100%;
-        height: auto;
+        height: 200px;
+        object-fit: cover;
+      }
+      .movie p {
+        padding: 10px;
+        font-size: 14px;
+        text-align: center;
+        color: #fff;
       }
       .favorites,
       .contact,
-      .signup {
+      .signup,
+      .genres {
         margin-top: 30px;
+      }
+      .favorites h2 {
+        background-color: #1e1e2f; /* Dark background color */
+        color: #fff; /* White text for contrast */
+        padding: 10px 20px; /* Add padding for spacing */
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+        display: inline-block; /* Ensure the box wraps around the text */
+        margin-bottom: 20px; /* Add spacing below the heading */
       }
       .modal {
         display: none;
@@ -73,64 +187,206 @@
         background-color: rgba(0, 0, 0, 0.5);
       }
       .modal-content {
-        background-color: white;
-        margin: 5% auto;
+        background-color: #1e1e2f; /* Dark background to match the theme */
+        color: #fff; /* White text for contrast */
+        border-radius: 10px;
         padding: 20px;
-        width: 90%;
-        max-width: 800px;
-        border-radius: 10px;
-        display: flex;
-        gap: 20px;
-        align-items: flex-start;
-        position: relative;
+        margin: 10% auto;
+        width: 80%;
+        max-width: 800px; /* Limit the width */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        display: flex; /* Use flexbox for layout */
+        gap: 20px; /* Add spacing between image and details */
+        height: auto; /* Adjust height to fit content */
+        overflow: hidden; /* Prevent scrolling */
       }
-      #modalImage {
-        max-width: 200px;
-        height: auto;
-        border-radius: 10px;
+
+      .modal-content img {
+        width: 30%; /* Reduce the width to 30% of the modal */
+        max-height: 300px; /* Limit the maximum height */
+        object-fit: cover; /* Ensure the image scales properly without distortion */
+        border-radius: 10px; /* Rounded corners for the image */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
       }
+
       .modal-details {
-        flex: 1;
+        flex: 1; /* Allow the details section to take the remaining space */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 10px; /* Reduce spacing between elements */
       }
+
       .modal-details h2 {
-        margin-top: 0;
+        color: #9147ff; /* Purple heading color */
+        margin-bottom: 10px;
+        font-size: 1.2em; /* Reduce heading size */
       }
-      .close {
-        position: absolute;
-        top: 10px;
-        right: 20px;
-        font-size: 28px;
-        font-weight: bold;
-        color: #ff0000;
+
+      .modal-details p {
+        margin: 10px 0;
+        line-height: 1.6; /* Improve readability */
+        font-size: 0.9em; /* Reduce paragraph text size */
+      }
+
+      .modal-details strong {
+        color: #47fcff; /* Highlight color for labels */
+      }
+
+      .modal-details button {
+        background-color: #9147ff;
+        color: white;
+        border: none;
+        padding: 8px 16px; /* Reduce button padding */
+        border-radius: 5px;
         cursor: pointer;
+        transition: background-color 0.3s;
+        font-size: 0.9em; /* Reduce button text size */
       }
-      .close:hover {
-        color: #ff6347;
-        transform: scale(1.5);
+
+      .modal-details button:hover {
+        background-color: #772ce8;
       }
-      .login-form {
-        max-width: 300px;
-        margin: 100px auto;
-        padding: 20px;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      #addToFavoritesBtn {
+        background-color: #47fcff; /* Light blue background */
+        color: #000; /* Black text */
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px; /* Add spacing above the button */
+        transition: background-color 0.3s;
       }
-      .login-form input {
+
+      #addToFavoritesBtn:hover {
+        background-color: #1e90ff; /* Darker blue on hover */
+      }
+      textarea {
         width: 100%;
         padding: 10px;
         margin: 10px 0;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        background: #fff;
+        color: #000;
+        box-sizing: border-box;
+        font-size: 0.9em; /* Reduce textarea font size */
       }
+      .login-form {
+        background: #B8DAD9;
+        color: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        max-width: 400px;
+        margin: 50px auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Center all child elements horizontally */
+      }
+
+      .login-form input {
+        width: 100%; /* Ensure both input fields take up the full width of the container */
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border: 1px solid #000; /* Set border color to black */
+        background: #fff;
+        color: #000; /* Set text color to black */
+        text-align: left; /* Align the text inside the input fields to the left */
+        box-sizing: border-box; /* Include padding and border in the element's width */
+      }
+
+      .password-container {
+        position: relative;
+        width: 100%; /* Ensure it matches the width of the input field */
+        margin: 10px 0;
+      }
+
+      .password-container input {
+        width: 100%; /* Ensure the input takes up the full width */
+        padding: 10px;
+        padding-right: 40px; /* Add space for the icon */
+        border-radius: 5px;
+        border: 1px solid #000; /* Set border color to black */
+        background: #fff;
+        color: #000;
+        box-sizing: border-box;
+      }
+
+      .password-toggle {
+        position: absolute;
+        right: 10px; /* Position the icon inside the input field */
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 18px; /* Adjust size for better visibility */
+        color: #333; /* Optional: Adjust color for better contrast */
+      }
+
       .login-form button {
-        padding: 10px 15px;
-        width: 100%;
-        background-color: #333;
+        width: 100%; /* Match the width of the input fields */
+        padding: 10px;
+        background-color: #9147ff;
         color: white;
         border: none;
+        border-radius: 5px;
         cursor: pointer;
       }
-      .hidden {
-        display: none;
+
+      .login-form button:hover {
+        background-color: #772ce8;
+      }
+
+      .login-form h2 {
+        color: #000; /* Set the "Login" heading color to black */
+      }
+
+      .login-form p {
+        color: #000; /* Set the "Already have an account?" text color to black */
+      }
+
+      .signup {
+        background: #B8DAD9;
+        color: #000000;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        max-width: 400px;
+        margin: 50px auto;
+      }
+      .signup input {
+        width: 100%; /* Ensure all input fields take up the full width of the container */
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border: 1px solid #000; /* Set border color to black */
+        background: #fff;
+        color: #000; /* Set text color to black */
+        box-sizing: border-box; /* Include padding and border in the element's width */
+      }
+      .signup button {
+        width: 100%;
+        padding: 10px;
+        background-color: #9147ff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .signup button:hover {
+        background-color: #772ce8;
+      }
+      .signup h2 {
+        color: #000; /* Set the "Sign Up" heading color to black */
+      }
+
+      .signup label {
+        color: #000; /* Set the "Email" and "Username" labels to black */
+      }
+
+      .signup p {
+        color: #000; /* Set the "Already have an account?" text color to black */
       }
       form input,
       form textarea {
@@ -154,9 +410,11 @@
         border: none;
         border-radius: 5px;
         cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
       }
       button:hover {
         background-color: #772ce8;
+        transform: scale(1.1);
       }
       #loading-message {
         font-size: 18px;
@@ -181,36 +439,216 @@
         background-color: #333;
         color: white;
         cursor: pointer;
+        transition: background-color 0.3s;
       }
       .pagination button:hover {
-        background-color: #555;
-      }
-      .password-container {
-        position: relative;
-      }
-      .password-toggle {
-        position: absolute;
-        right: 10px;
-        top: 35px;
-        cursor: pointer;
+        background-color: #9147ff;
       }
       .active-reaction {
         background-color: #772ce8 !important;
         transform: scale(1.05);
       }
+
+      footer {
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        padding: 10px 0;
+        position: relative;
+        bottom: 0;
+        width: 100%;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5);
+      }
+
+      footer p {
+        margin: 0;
+        font-size: 14px;
+      }
+
+      .hero {
+        text-align: left;
+        color: #000; /* Set text color to black */
+        padding: 20px;
+        position: relative;
+      }
+
+      .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        z-index: 1;
+      }
+
+      .hero-image {
+        width: 100%; /* Make the image span the full width of the container */
+        max-height: 500px; /* Limit the maximum height */
+        object-fit: cover; /* Ensure the image scales properly without distortion */
+        border-radius: 10px; /* Add rounded corners for a polished look */
+        margin-top: 20px; /* Add spacing above the image */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Add a shadow for depth */
+        z-index: 0;
+      }
+
+      .contact-form {
+        background: #B8DAD9; /* Light blue background */
+        color: #000; /* Black text color */
+        border-radius: 10px; /* Rounded corners */
+        padding: 20px; /* Inner padding */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+        max-width: 400px; /* Limit the width */
+        margin: 50px auto; /* Center the form */
+      }
+
+      .contact-form h2 {
+        color: #000; /* Black heading color */
+        text-align: center; /* Center the heading */
+        margin-bottom: 20px; /* Add spacing below the heading */
+      }
+
+      .contact-form label {
+        display: block; /* Ensure labels are on their own line */
+        margin-bottom: 5px; /* Add spacing below labels */
+        font-weight: bold; /* Make labels bold */
+      }
+
+      .contact-form input,
+      .contact-form textarea {
+        width: 100%; /* Full width for inputs and textarea */
+        padding: 10px; /* Inner padding */
+        margin: 10px 0; /* Spacing between fields */
+        border-radius: 5px; /* Rounded corners */
+        border: 1px solid #000; /* Black border */
+        background: #fff; /* White background */
+        color: #000; /* Black text color */
+        box-sizing: border-box; /* Include padding and border in width */
+      }
+
+      .contact-form button {
+        width: 100%; /* Full width for the button */
+        padding: 10px; /* Inner padding */
+        background-color: #9147ff; /* Purple background */
+        color: white; /* White text color */
+        border: none; /* Remove border */
+        border-radius: 5px; /* Rounded corners */
+        cursor: pointer; /* Pointer cursor on hover */
+        font-weight: bold; /* Bold text */
+      }
+
+      .contact-form button:hover {
+        background-color: #772ce8; /* Darker purple on hover */
+      }
+
+      .close-modal {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 1.5em;
+        cursor: pointer;
+        z-index: 1001;
+      }
+
+      .close-modal:hover {
+        color: #ff4d4d; /* Highlight color on hover */
+      }
+
+      /* Add this CSS for the box styling */
+      .heading-box {
+        background-color: #B8DAD9; /* Dark background to match the theme */
+        color: #000000; /* White text for contrast */
+        padding: 10px 20px; /* Add padding for spacing */
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+        display: inline-block; /* Ensure the box wraps around the text */
+        margin-bottom: 20px; /* Add spacing below the heading */
+      }
+
+      #top-movies-heading {
+        background-color: #1e1e2f; /* Dark background color */
+        color: #fff; /* White text for contrast */
+        padding: 10px 20px; /* Add padding for spacing */
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+        display: inline-block; /* Prevent the box from stretching */
+        font-family: 'Poppins', sans-serif; /* Use a futuristic font */
+        font-size: 1.8em; /* Adjust font size */
+        margin: 20px left; /* Add spacing to the left */
+        max-width: fit-content; /* Ensure the box only wraps around the text */
+        white-space: nowrap; /* Prevent the text from wrapping */
+      }
+
+      .genre-heading {
+        background-color: #1e1e2f; /* Dark background color */
+        color: #fff; /* White text for contrast */
+        padding: 10px 20px; /* Add padding inside the box */
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+        display: inline-block; /* Ensure the box wraps around the text */
+        margin: 20px; /* Add spacing around the heading */
+      }
+
+      #searchResultsHeading {
+        background-color: #1e1e2f; /* Purple background */
+        color: #fff; /* White text for contrast */
+        padding: 10px 20px; /* Add padding for spacing */
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+        display: inline-block; /* Ensure the box wraps around the text */
+        margin-bottom: 20px; /* Add spacing below the heading */
+      }
     </style>
   </head>
   <body>
-    <header>
-      <h1>Top Anime Movies</h1>
-    </header>
-
+    <!-- Updated Navigation Bar -->
     <nav>
-      <a href="#" onclick="showSection('home')">Home</a>
-      <a href="#" onclick="showSection('favoritesSection')">Favorites</a>
-      <a href="#" onclick="showSection('contactSection')">Contact</a>
-      <a href="#" onclick="showSection('signupSection')">Sign Up</a>
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <!-- Logo and Website Name -->
+        <img src="https://i.pinimg.com/736x/0c/1b/7b/0c1b7b23e76d26632cdda94c750a64a0.jpg" alt="AniFlix Logo" style="width: 50px; height: 50px; border-radius: 50%;" />
+        <h1 style="font-size: 1.5em; margin: 0; font-family: 'Poppins', sans-serif; color: #333;">AniFlix</h1>
+
+        <!-- Navigation Links -->
+        <a href="#" onclick="showSection('home')">Home</a>
+        <div class="dropdown">
+          <a href="#" onclick="toggleDropdown()">Genres</a>
+          <div id="genresDropdown" class="dropdown-content hidden"></div>
+        </div>
+        <a href="#" onclick="showSection('favoritesSection')">Favorites</a>
+        <a href="#" onclick="showSection('contactSection')">Contact</a>
+        <a href="#" onclick="showSection('signupSection')">Sign Up</a>
+      </div>
+      <div style="margin-left: auto; display: flex; align-items: center;">
+        <div style="position: relative;">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Search movies..."
+            oninput="showSuggestions()"
+            style="width: 100%;"
+          />
+          <div id="suggestions" style="position: absolute; top: 100%; left: 0; width: 100%; background-color: #222; color: #fff; border: 1px solid #555; border-radius: 5px; max-height: 200px; overflow-y: auto; display: none; z-index: 1000;"></div>
+        </div>
+        <button id="search-button" onclick="searchMovies()">Search</button>
+      </div>
     </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+      <div class="hero-overlay">
+        <h1>Welcome to AniFlix</h1>
+        <p>Your ultimate destination for anime movies!</p>
+      </div>
+      <img src="https://images3.alphacoders.com/105/thumb-1920-1053147.jpg" alt="Peaceful" class="hero-image" />
+    </div>
 
     <div class="container">
       <!-- Login Form -->
@@ -219,47 +657,28 @@
         <input type="text" id="username" placeholder="Username" />
         <div class="password-container">
           <input type="password" id="password" placeholder="Password" />
-          <span class="password-toggle" onclick="togglePassword('password')"
-            >👁️</span
-          >
+          <span class="password-toggle" onclick="togglePassword('password')">👁</span>
         </div>
         <button onclick="login()">Login</button>
         <p style="text-align: center; margin-top: 10px">
           Don't have an account?
-          <a href="#" onclick="showSignupFromLogin()" style="color: #9147ff"
-            >Sign up</a
-          >
+          <a href="#" onclick="showSignupFromLogin()" style="color: #9147ff">Sign up</a>
         </p>
       </div>
 
       <!-- Main Content -->
       <div id="mainContent" class="hidden">
         <div id="home">
-          <div
-            style="
-              display: flex;
-              justify-content: flex-end;
-              margin-bottom: 20px;
-            "
-          >
-            <input
-              type="text"
-              id="search-input"
-              placeholder="Search movies..."
-            />
-            <button id="search-button" onclick="searchMovies()">Search</button>
+          <!-- Wrap the "Top Movies" heading in a container -->
+          <div id="topMoviesContainer">
+            <h2 id="top-movies-heading" class="heading-box">
+              Top Movies
+            </h2>
           </div>
+
+          <!-- Movies Section -->
           <div class="movies" id="movie-list"></div>
           <div class="pagination" id="pagination"></div>
-          <h2>Watch our Video</h2>
-          <iframe
-            width="100%"
-            height="315"
-            src="https://www.youtube.com/embed/ZMysDTDqK-k"
-            title="YouTube video"
-            frameborder="0"
-            allowfullscreen
-          ></iframe>
         </div>
 
         <div class="favorites hidden" id="favoritesSection">
@@ -267,19 +686,22 @@
           <div class="movies" id="favorites"></div>
         </div>
 
-        <div class="contact hidden" id="contactSection">
+        <div class="genres hidden" id="genresSection">
+          <h2>Genres</h2>
+          <div id="genresList" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
+        </div>
+
+        <div class="contact-form hidden" id="contactSection">
           <h2>Contact Us</h2>
-          <form
-            onsubmit="event.preventDefault(); alert('Thanks for reaching out!');"
-          >
+          <form id="contactForm" onsubmit="event.preventDefault(); alert('Thanks for reaching out!');">
             <label for="name">Name</label>
-            <input type="text" id="name" required />
+            <input type="text" id="name" placeholder="Your Name" required />
             <label for="email">Email</label>
-            <input type="email" id="email" required />
+            <input type="email" id="email" placeholder="Your Email" required />
             <label for="phone">Phone Number</label>
-            <input type="tel" id="phone" />
+            <input type="tel" id="phone" placeholder="Your Phone Number" />
             <label for="comment">Comment</label>
-            <textarea id="comment" rows="5" required></textarea>
+            <textarea id="comment" rows="5" placeholder="Your Message" required></textarea>
             <button type="submit">Submit</button>
           </form>
         </div>
@@ -288,160 +710,401 @@
           <h2>Sign Up</h2>
           <form id="signupForm" onsubmit="event.preventDefault(); signUp();">
             <label for="signup-email">Email</label>
-            <input type="email" id="signup-email" required />
+            <input type="email" id="signup-email" placeholder="Email" required />
 
             <label for="signup-username">Username</label>
-            <input type="text" id="signup-username" required />
+            <input type="text" id="signup-username" placeholder="Username" required />
 
             <div class="password-container">
               <label for="signup-password">Password</label>
-              <input
-                type="password"
-                id="signup-password"
-                required
-                minlength="6"
-              />
-              <span
-                class="password-toggle"
-                onclick="togglePassword('signup-password')"
-                >👁️</span
-              >
+              <input type="password" id="signup-password" placeholder="Password" minlength="6" />
+              <span class="password-toggle" onclick="togglePassword('signup-password')">👁</span>
             </div>
 
-            <div class="password-container">
-              <label for="confirm-password">Confirm Password</label>
-              <input
-                type="password"
-                id="confirm-password"
-                required
-                minlength="6"
-              />
-              <span
-                class="password-toggle"
-                onclick="togglePassword('confirm-password')"
-                >👁️</span
-              >
-            </div>
 
             <button type="submit">Sign Up</button>
             <p style="text-align: center; margin-top: 10px">
               Already have an account?
-              <a href="#" onclick="showLoginFromSignup()" style="color: #9147ff"
-                >Log in</a
-              >
+              <a href="#" onclick="showLoginFromSignup()" style="color: #9147ff">Log in</a>
             </p>
           </form>
         </div>
 
-        <div class="modal" id="movieModal">
-          <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <img id="modalImage" src="" alt="Movie Image" />
-            <div class="modal-details">
-              <h2 id="modalTitle"></h2>
-              <p id="modalSynopsis"></p>
-              <button onclick="addToFavorites()">Add to Favorites</button>
-              <div style="margin-top: 15px">
-                <button onclick="likeMovie()" id="likeBtn">
-                  👍 Like (<span id="likeCount">0</span>)
-                </button>
-                <button
-                  onclick="dislikeMovie()"
-                  id="dislikeBtn"
-                  style="margin-left: 10px"
-                >
-                  👎 Dislike (<span id="dislikeCount">0</span>)
-                </button>
-              </div>
-            </div>
-          </div>
+        <div id="genrePage" class="hidden">
+          <h2 id="genreHeading" class="genre-heading">
+            <!-- Genre name will be dynamically inserted here -->
+          </h2>
+          <div class="movies" id="genreMovies"></div>
+          <div class="pagination" id="genrePagination"></div>
+        </div>
+
+        <div id="searchResultsPage" class="hidden">
+          <h2 id="searchResultsHeading" class="heading-box"></h2>
+          <div class="movies" id="searchResults"></div>
+          <div class="pagination" id="searchResultsPagination"></div>
         </div>
       </div>
     </div>
 
-    <footer><p>&copy; 2025 Anime Hub</p></footer>
+    <div id="movieModal" class="modal">
+      <div class="modal-content">
+        <button class="close-modal" onclick="closeModal()">✖</button>
+        <img id="modalImage" alt="Movie Image" />
+        <div class="modal-details">
+          <h2 id="modalTitle"></h2>
+          <p id="modalSynopsis"></p>
+          <p><strong>Genres:</strong> <span id="modalGenres"></span></p>
+          <div>
+            <button id="likeBtn" onclick="likeMovie()">👍 Like</button>
+            <span id="likeCount">0</span>
+            <button id="dislikeBtn" onclick="dislikeMovie()">👎 Dislike</button>
+            <span id="dislikeCount">0</span>
+          </div>
+          <button id="addToFavoritesBtn" onclick="addToFavorites()">Add to Favorites</button> <!-- New button -->
+          <hr />
+          <h3>Comments</h3>
+          <div id="commentsSection"></div>
+          <textarea id="commentInput" placeholder="Write a comment..."></textarea>
+          <button onclick="postComment()">Post Comment</button>
+        </div>
+      </div>
+    </div>
+
+    <section id="detailsSection" style="padding: 20px; background-color: #1e1e2f; color: #fff; text-align: center; margin-top: 30px;">
+      <h2>About AniFlix</h2>
+      <p>
+        AniFlix is your ultimate destination for discovering and enjoying the best anime movies. 
+        Explore genres, add your favorites, and share your reactions with the community.
+      </p>
+      <p>
+        Built with love for anime fans, AniFlix brings you a curated collection of top-rated anime movies.
+        Stay tuned for more updates and features!
+      </p>
+      <p style="margin-top: 20px; font-size: 14px; color: #aaa;">
+        &copy; 2025 AniFlix.
+      </p>
+    </section>
+
+    <footer>
+      <p>&copy; 2025 AniFlix</p>
+    </footer>
 
     <script>
       let selectedMovie = null;
       let allMovies = [];
       let likeCounts = {};
       let dislikeCounts = {};
-      let userReactions = {}; // Track user reactions { movieId: 'like'/'dislike' }
+      let userReactions = {};
       let currentPage = 1;
-      const moviesPerPage = 8;
+      const moviesPerPage = 15; // Set the number of movies per page to 15
       let users = [];
-      let currentUser = null; // Track logged in user
+      let currentUser = null;
+      let movieComments = {}; // Store comments for each movie
+
+      function sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
 
       async function fetchMovies() {
-        const movieList = document.getElementById("movie-list");
-        const searchBtn = document.getElementById("search-button");
-        const searchInput = document.getElementById("search-input");
-        movieList.innerHTML =
-          '<p id="loading-message">Loading movies, please wait...</p>';
-        searchBtn.disabled = true;
-        searchInput.disabled = true;
-
-        let page = 1;
-        try {
-          while (allMovies.length < 200) {
-            const res = await fetch(
-              `https://api.jikan.moe/v4/top/anime?type=movie&page=${page}`
-            );
-            const data = await res.json();
-            if (!data.data || data.data.length === 0) break;
-            allMovies = allMovies.concat(data.data);
-            page++;
+  try {
+    let page = 1;
+    while (allMovies.length < 200) {
+      const res = await fetch(`https://api.jikan.moe/v4/top/anime?type=movie&page=${page}`);
+      const data = await res.json();
+      if (!data.data || data.data.length === 0) break;
+      allMovies = allMovies.concat(data.data);
+      page++;
+      await sleep(1000);
+    }
+    console.log("Loaded movies from API:", allMovies);
+    displayMovies(allMovies, 1);
+  } catch (error) {
+    console.error("API Fetch failed, loading mock data instead...", error);
+    // Fallback mock data
+    allMovies = [
+      {
+        mal_id: 1,
+        title: "My Neighbor Totoro",
+        synopsis: "Two girls move to the countryside and meet a friendly forest spirit.",
+        genres: [{ name: "Fantasy" }, { name: "Family" }],
+        images: {
+          jpg: {
+            image_url: "https://upload.wikimedia.org/wikipedia/en/0/0b/My_Neighbor_Totoro_-_Tonari_no_Totoro_%281988%29_theatrical_poster.jpg"
           }
-          displayMovies(allMovies, 1);
-          searchBtn.disabled = false;
-          searchInput.disabled = false;
-        } catch (error) {
-          movieList.innerHTML =
-            "<p>Error loading movies. Please try again later.</p>";
-          console.error("Fetch error:", error);
+        }
+      },
+      {
+        mal_id: 2,
+        title: "Spirited Away",
+        synopsis: "A girl enters a magical world to save her parents.",
+        genres: [{ name: "Adventure" }, { name: "Fantasy" }],
+        images: {
+          jpg: {
+            image_url: "https://upload.wikimedia.org/wikipedia/en/3/30/Spirited_Away_poster.JPG"
+          }
+        }
+      },
+      {
+        mal_id: 3,
+        title: "Your Name",
+        synopsis: "Two teenagers share a magical connection that intertwines their lives.",
+        genres: [{ name: "Romance" }, { name: "Drama" }],
+        images: {
+          jpg: {
+            image_url: "https://upload.wikimedia.org/wikipedia/en/0/0b/Your_Name_poster.png"
+          }
         }
       }
+    ];
+    displayMovies(allMovies, 1);
+  }
+}
 
-      function displayMovies(movies, page = 1) {
-        const container = document.getElementById("movie-list");
-        const pagination = document.getElementById("pagination");
-        container.innerHTML = "";
-        pagination.innerHTML = "";
 
-        const start = (page - 1) * moviesPerPage;
-        const end = start + moviesPerPage;
-        const pageMovies = movies.slice(start, end);
+      async function fetchGenres() {
+  const dropdown = document.getElementById("genresDropdown");
+  dropdown.innerHTML = '<p style="padding: 10px; color: #fff;">Loading genres...</p>'; // Show a loading message
 
-        pageMovies.forEach((movie) => {
-          const div = document.createElement("div");
-          div.className = "movie";
-          div.innerHTML = `<img src="${movie.images.jpg.image_url}" alt="${movie.title}"><p style="padding: 10px;">${movie.title}</p>`;
-          div.onclick = () => showModal(movie);
-          container.appendChild(div);
-        });
+  try {
+    const res = await fetch("https://api.jikan.moe/v4/genres/anime");
+    const data = await res.json();
 
-        const totalPages = Math.ceil(movies.length / moviesPerPage);
-        for (let i = 1; i <= totalPages; i++) {
-          const btn = document.createElement("button");
-          btn.innerText = i;
-          if (i === page) btn.style.backgroundColor = "#772ce8";
-          btn.onclick = () => {
-            currentPage = i;
-            displayMovies(movies, currentPage);
-          };
-          pagination.appendChild(btn);
-        }
-      }
+    dropdown.innerHTML = ""; // Clear the dropdown content
+
+    // List of genres to display in alphabetical order
+    const allowedGenres = ["Action", "Adventure", "Comedy", "Drama", "Fantasy", "Horror", "Romance", "Sci-Fi"];
+    const filteredGenres = data.data.filter((genre) => allowedGenres.includes(genre.name));
+
+    // Sort genres alphabetically
+    filteredGenres.sort((a, b) => a.name.localeCompare(b.name));
+
+    filteredGenres.forEach((genre) => {
+      const genreItem = document.createElement("a");
+      genreItem.textContent = genre.name;
+      genreItem.style.cursor = "pointer";
+      genreItem.onclick = () => filterMoviesByGenre(genre.mal_id);
+      dropdown.appendChild(genreItem);
+    });
+  } catch (error) {
+    console.error("Error fetching genres:", error);
+    dropdown.innerHTML = '<p style="padding: 10px; color: #fff;">Failed to load genres.</p>';
+  }
+}
+
+      function filterMoviesByGenre(genreId) {
+  const filteredMovies = allMovies.filter((movie) =>
+    movie.genres.some((genre) => genre.mal_id === genreId)
+  );
+
+  // Get the genre name
+  const genreName = allMovies
+    .flatMap((movie) => movie.genres)
+    .find((genre) => genre.mal_id === genreId)?.name || "Unknown Genre";
+
+  // Update the genre heading
+  document.getElementById("genreHeading").innerText = genreName;
+
+  // Display the filtered movies in the new section
+  displayMovies(filteredMovies, 1, "genreMovies", "genrePagination");
+
+  // Hide other sections and show the genre page
+  const sections = ["home", "genresSection", "favoritesSection", "contactSection", "signupSection"];
+  sections.forEach((id) => document.getElementById(id).classList.add("hidden"));
+  document.getElementById("genrePage").classList.remove("hidden");
+
+  // Hide the hero section
+  const heroSection = document.querySelector(".hero");
+  if (heroSection) {
+    heroSection.style.display = "none";
+  }
+}
+
+      function displayMovies(movies, page = 1, containerId = "movie-list", paginationId = "pagination") {
+  const container = document.getElementById(containerId);
+  const pagination = document.getElementById(paginationId);
+  container.innerHTML = "";
+  pagination.innerHTML = "";
+
+  const start = (page - 1) * moviesPerPage;
+  const end = start + moviesPerPage;
+  const pageMovies = movies.slice(start, end);
+
+  // Display movies for the current page
+  pageMovies.forEach((movie) => {
+    const div = document.createElement("div");
+    div.className = "movie";
+    div.innerHTML = `<img src="${movie.images.jpg.image_url}" alt="${movie.title}"><p style="padding: 10px;">${movie.title}</p>`;
+    div.onclick = () => {
+      console.log(`Clicked on: ${movie.title}`); // Debugging log
+      showModal(movie);
+    };
+    container.appendChild(div);
+  });
+
+  // Calculate total pages
+  const totalPages = Math.ceil(movies.length / moviesPerPage);
+
+  // Create pagination buttons
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = document.createElement("button");
+    btn.innerText = i;
+    if (i === page) btn.style.backgroundColor = "#772ce8"; // Highlight the current page
+    btn.onclick = () => {
+      displayMovies(movies, i, containerId, paginationId);
+    };
+    pagination.appendChild(btn);
+  }
+}
 
       function searchMovies() {
-        const query = document
-          .getElementById("search-input")
-          .value.trim()
-          .toLowerCase();
-        const filtered = allMovies.filter((movie) =>
-          movie.title.toLowerCase().includes(query)
-        );
-        displayMovies(filtered, 1);
+  const query = document.getElementById("search-input").value.trim().toLowerCase();
+  const searchResultsContainer = document.getElementById("searchResults");
+  const searchResultsPagination = document.getElementById("searchResultsPagination");
+  const searchResultsHeading = document.getElementById("searchResultsHeading");
+
+  // Prevent search functionality on the login page
+  const loginForm = document.getElementById("loginForm");
+  if (!loginForm.classList.contains("hidden")) {
+    alert("Please log in to search for movies.");
+    return;
+  }
+
+  searchResultsContainer.innerHTML = "";
+  searchResultsPagination.innerHTML = "";
+
+  // Check if movies are loaded
+  if (allMovies.length === 0) {
+    searchResultsContainer.innerHTML = "<div class='no-results'>Movies are still loading. Please try again later.</div>";
+    return;
+  }
+
+  if (query === "") {
+    searchResultsContainer.innerHTML = "<div class='no-results'>Please enter a search term.</div>";
+    return;
+  }
+
+  const filtered = allMovies.filter((movie) => movie.title.toLowerCase().includes(query));
+
+  if (filtered.length === 0) {
+    searchResultsContainer.innerHTML = "<div class='no-results'>No results found :(</div>";
+  } else {
+    // Update the heading with the search query
+    searchResultsHeading.innerText = `Search results for: "${query}"`;
+
+    // Display the filtered movies in the search results section
+    displayMovies(filtered, 1, "searchResults", "searchResultsPagination");
+
+    // Show the search results page and hide other sections
+    const sections = ["home", "genresSection", "favoritesSection", "contactSection", "signupSection", "genrePage"];
+    sections.forEach((id) => document.getElementById(id).classList.add("hidden"));
+    document.getElementById("searchResultsPage").classList.remove("hidden");
+
+    // Hide the hero section
+    const heroSection = document.querySelector(".hero");
+    if (heroSection) {
+      heroSection.style.display = "none";
+    }
+  }
+}
+
+      function showSuggestions() {
+  const query = document.getElementById("search-input").value.trim().toLowerCase();
+  const suggestionsContainer = document.getElementById("suggestions");
+
+  // Clear previous suggestions
+  suggestionsContainer.innerHTML = "";
+
+  if (query === "") {
+    suggestionsContainer.style.display = "none";
+    return;
+  }
+
+  // Filter movies based on the query
+  const filteredMovies = allMovies.filter((movie) =>
+    movie.title.toLowerCase().includes(query)
+  );
+
+  if (filteredMovies.length === 0) {
+    // Show "No movies found" if no matches
+    suggestionsContainer.innerHTML = "<p style='padding: 10px; text-align: center; color: #aaa;'>No movies found</p>";
+  } else {
+    // Display matching movies
+    filteredMovies.forEach((movie) => {
+      const suggestion = document.createElement("div");
+      suggestion.style.display = "flex";
+      suggestion.style.alignItems = "center";
+      suggestion.style.padding = "10px";
+      suggestion.style.cursor = "pointer";
+      suggestion.style.borderBottom = "1px solid #555";
+
+      suggestion.innerHTML = `
+        <img src="${movie.images.jpg.image_url}" alt="${movie.title}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px; margin-right: 10px;">
+        <span>${movie.title}</span>
+      `;
+
+      // Add click event to show the movie modal or display a login message
+      suggestion.onclick = () => {
+        const loginForm = document.getElementById("loginForm");
+        if (!loginForm.classList.contains("hidden")) {
+          alert("Please login to view movie details.");
+        } else {
+          showModal(movie);
+          suggestionsContainer.style.display = "none"; // Hide suggestions after selection
+        }
+      };
+
+      suggestionsContainer.appendChild(suggestion);
+    });
+  }
+
+  // Show the suggestions container
+  suggestionsContainer.style.display = "block";
+}
+
+      function showSection(sectionId) {
+  const sections = ["home", "genresSection", "favoritesSection", "contactSection", "signupSection", "genrePage", "searchResultsPage"];
+  sections.forEach((id) => document.getElementById(id).classList.add("hidden"));
+  document.getElementById(sectionId).classList.remove("hidden");
+
+  const heroSection = document.querySelector(".hero");
+
+  // Show the hero section only on the home page
+  if (sectionId === "home") {
+    if (heroSection) {
+      heroSection.style.display = "block";
+    }
+    displayMovies(allMovies, 1); // Reset movies to the full list when returning to home
+  } else {
+    if (heroSection) {
+      heroSection.style.display = "none";
+    }
+  }
+
+  if (sectionId === "genresSection") {
+    fetchGenres();
+  }
+}
+
+      function toggleDropdown() {
+        const dropdown = document.getElementById("genresDropdown");
+        dropdown.classList.toggle("hidden");
+
+        // Fetch genres only if the dropdown is being shown
+        if (!dropdown.classList.contains("hidden")) {
+          fetchGenres();
+        }
+
+        // Add a one-time event listener to hide the dropdown when clicking outside
+        const handleClickOutside = (event) => {
+          if (!dropdown.contains(event.target) && !event.target.closest(".dropdown")) {
+            dropdown.classList.add("hidden");
+            document.removeEventListener("click", handleClickOutside); // Remove the event listener after it's triggered
+          }
+        };
+
+        if (!dropdown.classList.contains("hidden")) {
+          document.addEventListener("click", handleClickOutside);
+        }
       }
 
       function showModal(movie) {
@@ -452,15 +1115,16 @@
         document.getElementById("modalSynopsis").innerText =
           movie.synopsis || "No synopsis available.";
 
-        // Initialize counts if they don't exist
+        // Display up to 3 genres
+        const genres = movie.genres.slice(0, 3).map((genre) => genre.name).join(", ");
+        document.getElementById("modalGenres").innerText = genres || "No genres available.";
+
         likeCounts[id] = likeCounts[id] || 0;
         dislikeCounts[id] = dislikeCounts[id] || 0;
 
-        // Update display
         document.getElementById("likeCount").innerText = likeCounts[id];
         document.getElementById("dislikeCount").innerText = dislikeCounts[id];
 
-        // Highlight active reaction if user has reacted
         const likeBtn = document.getElementById("likeBtn");
         const dislikeBtn = document.getElementById("dislikeBtn");
         likeBtn.classList.remove("active-reaction");
@@ -475,7 +1139,13 @@
           }
         }
 
-        document.getElementById("movieModal").style.display = "block";
+        // Load comments for the movie
+        loadComments(id);
+
+        // Ensure the modal is visible
+        const modal = document.getElementById("movieModal");
+        modal.style.display = "block";
+        modal.classList.remove("hidden"); // Remove the 'hidden' class if it exists
       }
 
       function closeModal() {
@@ -489,10 +1159,24 @@
         }
 
         const favContainer = document.getElementById("favorites");
+
+        // Check if the movie is already in the favorites
+        const existingFavorite = Array.from(favContainer.children).find(
+          (child) => child.dataset.movieId === String(selectedMovie.mal_id)
+        );
+
+        if (existingFavorite) {
+          alert("This movie is already in your favorites!");
+          return;
+        }
+
+        // Add the movie to favorites
         const div = document.createElement("div");
         div.className = "movie";
+        div.dataset.movieId = selectedMovie.mal_id; // Store the movie ID for future checks
         div.innerHTML = `<img src="${selectedMovie.images.jpg.image_url}" alt="${selectedMovie.title}"><p style="padding: 10px;">${selectedMovie.title}</p>`;
         favContainer.appendChild(div);
+
         closeModal();
       }
 
@@ -507,22 +1191,17 @@
         const likeBtn = document.getElementById("likeBtn");
         const dislikeBtn = document.getElementById("dislikeBtn");
 
-        // If already liked, remove the like
         if (userReactions[reactionKey] === "like") {
           likeCounts[id]--;
           delete userReactions[reactionKey];
           likeBtn.classList.remove("active-reaction");
-        }
-        // If disliked, switch to like
-        else if (userReactions[reactionKey] === "dislike") {
+        } else if (userReactions[reactionKey] === "dislike") {
           dislikeCounts[id]--;
           likeCounts[id]++;
           userReactions[reactionKey] = "like";
           dislikeBtn.classList.remove("active-reaction");
           likeBtn.classList.add("active-reaction");
-        }
-        // If no reaction, add like
-        else {
+        } else {
           likeCounts[id]++;
           userReactions[reactionKey] = "like";
           likeBtn.classList.add("active-reaction");
@@ -543,22 +1222,17 @@
         const likeBtn = document.getElementById("likeBtn");
         const dislikeBtn = document.getElementById("dislikeBtn");
 
-        // If already disliked, remove the dislike
         if (userReactions[reactionKey] === "dislike") {
           dislikeCounts[id]--;
           delete userReactions[reactionKey];
           dislikeBtn.classList.remove("active-reaction");
-        }
-        // If liked, switch to dislike
-        else if (userReactions[reactionKey] === "like") {
+        } else if (userReactions[reactionKey] === "like") {
           likeCounts[id]--;
           dislikeCounts[id]++;
           userReactions[reactionKey] = "dislike";
           likeBtn.classList.remove("active-reaction");
           dislikeBtn.classList.add("active-reaction");
-        }
-        // If no reaction, add dislike
-        else {
+        } else {
           dislikeCounts[id]++;
           userReactions[reactionKey] = "dislike";
           dislikeBtn.classList.add("active-reaction");
@@ -576,9 +1250,8 @@
           currentUser = { username: "bob" };
           document.getElementById("loginForm").classList.add("hidden");
           document.getElementById("mainContent").classList.remove("hidden");
-          fetchMovies();
+          fetchMovies(); // Ensure movies are fetched after login
         } else {
-          // Check if user exists in registered users
           const foundUser = users.find(
             (u) => u.username === user && u.password === pass
           );
@@ -586,7 +1259,7 @@
             currentUser = foundUser;
             document.getElementById("loginForm").classList.add("hidden");
             document.getElementById("mainContent").classList.remove("hidden");
-            fetchMovies();
+            fetchMovies(); // Ensure movies are fetched after login
           } else {
             alert("Incorrect login");
           }
@@ -605,19 +1278,16 @@
           return;
         }
 
-        // Check if username already exists
         if (users.some((u) => u.username === username)) {
           alert("Username already exists!");
           return;
         }
 
-        // Check if email already exists
         if (users.some((u) => u.email === email)) {
           alert("Email already registered!");
           return;
         }
 
-        // Add new user
         users.push({
           email,
           username,
@@ -649,18 +1319,77 @@
         document.getElementById("mainContent").classList.add("hidden");
       }
 
-      function showSection(sectionId) {
-    const sections = ["home", "favoritesSection", "contactSection"];
-    sections.forEach((id) => document.getElementById(id).classList.add("hidden"));
-    document.getElementById(sectionId).classList.remove("hidden");
+      function createSlideshow() {
+        const slideshow = document.getElementById("slideshow");
+        const randomMovies = allMovies.sort(() => 0.5 - Math.random()).slice(0, 4); // Get 4 random movies
 
-    // Reset search input and display all movies when navigating to "Home"
-    if (sectionId === "home") {
-      const searchInput = document.getElementById("search-input");
-      searchInput.value = ""; // Clear the search input
-      displayMovies(allMovies, 1); // Display all movies
-    }
-  }
+        randomMovies.forEach((movie) => {
+          const slide = document.createElement("div");
+          slide.className = "slideshow-item";
+          slide.innerHTML = `
+            <img src="${movie.images.jpg.image_url}" alt="${movie.title}">
+            <h3>${movie.title}</h3>
+            <p>${movie.synopsis ? movie.synopsis.substring(0, 100) + "..." : "No synopsis available."}</p>
+          `;
+          slideshow.appendChild(slide);
+        });
+
+        let currentIndex = 0;
+
+        setInterval(() => {
+          currentIndex = (currentIndex + 1) % randomMovies.length;
+          slideshow.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }, 3000); // Switch slides every 3 seconds
+      }
+
+      function loadComments(movieId) {
+        const commentsSection = document.getElementById("commentsSection");
+        commentsSection.innerHTML = ""; // Clear previous comments
+
+        const comments = movieComments[movieId] || [];
+        comments.forEach((comment) => {
+          const commentDiv = document.createElement("div");
+          commentDiv.style.marginBottom = "10px";
+          commentDiv.innerText = comment;
+          commentsSection.appendChild(commentDiv);
+        });
+      }
+
+      function postComment() {
+        const commentInput = document.getElementById("commentInput");
+        const comment = commentInput.value.trim();
+
+        if (!comment) {
+          alert("Please write a comment before posting.");
+          return;
+        }
+
+        const movieId = selectedMovie.mal_id;
+        movieComments[movieId] = movieComments[movieId] || [];
+        movieComments[movieId].push(comment);
+
+        commentInput.value = ""; // Clear the input field
+        loadComments(movieId); // Reload comments
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        fetchMovies(); // Fetch and display movies when the page loads
+        createSlideshow(); // Initialize the slideshow when the page loads
+      });
+
+      document.getElementById("search-input").addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault(); // Prevent the default form submission behavior
+          searchMovies(); // Trigger the search function
+        }
+      });
+
+      document.getElementById("password").addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault(); // Prevent the default form submission behavior
+          login(); // Trigger the login function
+        }
+      });
     </script>
   </body>
 </html>

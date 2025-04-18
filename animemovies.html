@@ -3,13 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Top Anime Movies</title>
+    <title>AniFlix</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
     <style>
       body {
-        font-family: Arial, sans-serif;
+        font-family: 'Poppins', sans-serif; /* Apply the font to the entire website */
         margin: 0;
         padding: 0;
-        background-color: #f4f4f4;
+        background: radial-gradient(circle at center, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1); /* Pinkish nebula gradient */
+        background-size: cover; /* Ensure the gradient covers the entire screen */
+        color: #fff; /* White text for contrast */
       }
       header,
       footer {
@@ -19,46 +24,140 @@
         padding: 1em;
       }
       nav {
-        background-color: #444;
+        background-color: #B8DAD9; /* Light blue color for the navigation bar */
         display: flex;
-        justify-content: center;
-        gap: 20px;
-        padding: 10px;
+        align-items: center;
+        justify-content: space-between; /* Align links to the left and search bar to the right */
+        padding: 10px 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
       }
+
       nav a {
-        color: white;
+        color: #333; /* Adjust text color for better contrast */
         text-decoration: none;
         font-weight: bold;
+        margin-right: 15px;
+        padding-right: 15px; /* Add padding to the right for spacing */
+        border-right: 1px solid #555; /* Add a vertical line to separate options */
+        transition: color 0.3s;
       }
+
+      nav a:last-child {
+        border-right: none; /* Remove the line for the last option */
+      }
+
       nav a:hover {
-        text-decoration: underline;
+        color: #9147ff; /* Highlight color on hover */
+      }
+
+      nav input[type="text"] {
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        max-width: 300px; /* Limit the width of the search bar */
+      }
+
+      nav button {
+        padding: 8px 12px;
+        border-radius: 5px;
+        border: none;
+        background-color: #9147ff;
+        color: white;
+        cursor: pointer;
+        margin-left: 10px; /* Add spacing between the input and button */
+      }
+
+      nav button:hover {
+        background-color: #772ce8;
+      }
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+      .dropdown-content {
+        position: absolute;
+        background-color: #222; /* Dark background for the dropdown */
+        min-width: 200px; /* Adjust the width of the dropdown */
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.5); /* Add a shadow for depth */
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #555; /* Add a border for better visibility */
+      }
+      .dropdown-content a {
+        color: #fff; /* White text for contrast */
+        text-decoration: none;
+        padding: 10px 15px; /* Add padding for better spacing */
+        border-radius: 5px; /* Rounded corners */
+        background-color: #333; /* Slightly lighter background for items */
+        transition: background-color 0.3s, transform 0.2s; /* Smooth hover effect */
+        cursor: pointer;
+      }
+      .dropdown-content a:hover {
+        background-color: #9147ff; /* Highlight color on hover */
+        transform: scale(1.05); /* Slight zoom effect on hover */
+      }
+      .dropdown-content.hidden {
+        display: none; /* Ensure the dropdown is completely hidden */
+        z-index: -1; /* Push it behind other elements */
+      }
+      .dropdown a {
+        color: #000; /* Set the "Genres" link color to black */
+        text-decoration: none;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .dropdown a:hover {
+        color: #9147ff; /* Highlight the "Genres" link on hover */
+      }
+      .hidden {
+        display: none !important; /* Ensure the element is completely hidden */
       }
       .container {
         padding: 20px;
       }
       .movies {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
+        grid-template-columns: repeat(5, 1fr); /* 5 movies per row */
+        gap: 10px; /* Add slight spacing between movies */
+        position: relative; /* Ensure the movie container is properly positioned */
+        z-index: 1; /* Set a higher z-index for the movie cards */
       }
       .movie {
-        background: white;
+        background: #222;
         border-radius: 10px;
         overflow: hidden;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        cursor: pointer;
-        transition: transform 0.2s;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s, box-shadow 0.3s;
+        position: relative; /* Ensure the movie cards are clickable */
+        z-index: 2; /* Ensure movie cards are above other elements */
+        cursor: pointer; /* Add this line */
       }
       .movie:hover {
         transform: scale(1.05);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
       }
       .movie img {
         width: 100%;
-        height: auto;
+        height: 200px;
+        object-fit: cover;
+      }
+      .movie p {
+        padding: 10px;
+        font-size: 14px;
+        text-align: center;
+        color: #fff;
       }
       .favorites,
       .contact,
-      .signup {
+      .signup,
+      .genres {
         margin-top: 30px;
       }
       .modal {
@@ -73,16 +172,36 @@
         background-color: rgba(0, 0, 0, 0.5);
       }
       .modal-content {
-        background-color: white;
-        margin: 5% auto;
-        padding: 20px;
-        width: 90%;
-        max-width: 800px;
+        background-color: #1e1e2f;
+        color: #fff;
         border-radius: 10px;
-        display: flex;
-        gap: 20px;
-        align-items: flex-start;
-        position: relative;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        animation: fadeIn 0.3s ease-in-out;
+      }
+      .modal-content h2 {
+        color: #9147ff;
+      }
+      .modal-content button {
+        background-color: #9147ff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .modal-content button:hover {
+        background-color: #772ce8;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
       }
       #modalImage {
         max-width: 200px;
@@ -109,28 +228,112 @@
         transform: scale(1.5);
       }
       .login-form {
-        max-width: 300px;
-        margin: 100px auto;
-        padding: 20px;
-        background: white;
+        background: #B8DAD9;
+        color: #fff;
         border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        max-width: 400px;
+        margin: 50px auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Center all child elements horizontally */
       }
+
       .login-form input {
-        width: 100%;
+        width: 100%; /* Ensure both input fields take up the full width of the container */
         padding: 10px;
         margin: 10px 0;
+        border-radius: 5px;
+        border: 1px solid #000; /* Set border color to black */
+        background: #fff;
+        color: #000; /* Set text color to black */
+        text-align: left; /* Align the text inside the input fields to the left */
+        box-sizing: border-box; /* Include padding and border in the element's width */
       }
+
+      .password-container {
+        position: relative;
+        width: 100%; /* Ensure it matches the width of the input field */
+        margin: 10px 0;
+      }
+
+      .password-container input {
+        width: 100%; /* Ensure the input takes up the full width */
+        padding: 10px;
+        padding-right: 40px; /* Add space for the icon */
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        background: #fff;
+        color: #000;
+        box-sizing: border-box;
+      }
+
+      .password-toggle {
+        position: absolute;
+        right: 10px; /* Position the icon inside the input field */
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 18px; /* Adjust size for better visibility */
+        color: #333; /* Optional: Adjust color for better contrast */
+      }
+
       .login-form button {
-        padding: 10px 15px;
-        width: 100%;
-        background-color: #333;
+        width: 100%; /* Match the width of the input fields */
+        padding: 10px;
+        background-color: #9147ff;
         color: white;
         border: none;
+        border-radius: 5px;
         cursor: pointer;
       }
-      .hidden {
-        display: none;
+
+      .login-form button:hover {
+        background-color: #772ce8;
+      }
+
+      .signup {
+        background: #B8DAD9;
+        color: #000000;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        max-width: 400px;
+        margin: 50px auto;
+      }
+      .signup input {
+        width: 100%; /* Ensure all input fields take up the full width of the container */
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border: 1px solid #000; /* Set border color to black */
+        background: #fff;
+        color: #000; /* Set text color to black */
+        box-sizing: border-box; /* Include padding and border in the element's width */
+      }
+      .signup button {
+        width: 100%;
+        padding: 10px;
+        background-color: #9147ff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .signup button:hover {
+        background-color: #772ce8;
+      }
+      .signup h2 {
+        color: #000; /* Set the "Sign Up" heading color to black */
+      }
+
+      .signup label {
+        color: #000; /* Set the "Email" and "Username" labels to black */
+      }
+
+      .signup p {
+        color: #000; /* Set the "Already have an account?" text color to black */
       }
       form input,
       form textarea {
@@ -154,9 +357,11 @@
         border: none;
         border-radius: 5px;
         cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
       }
       button:hover {
         background-color: #772ce8;
+        transform: scale(1.1);
       }
       #loading-message {
         font-size: 18px;
@@ -181,36 +386,133 @@
         background-color: #333;
         color: white;
         cursor: pointer;
+        transition: background-color 0.3s;
       }
       .pagination button:hover {
-        background-color: #555;
-      }
-      .password-container {
-        position: relative;
-      }
-      .password-toggle {
-        position: absolute;
-        right: 10px;
-        top: 35px;
-        cursor: pointer;
+        background-color: #9147ff;
       }
       .active-reaction {
         background-color: #772ce8 !important;
         transform: scale(1.05);
       }
+
+      footer {
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        padding: 10px 0;
+        position: relative;
+        bottom: 0;
+        width: 100%;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5);
+      }
+
+      footer p {
+        margin: 0;
+        font-size: 14px;
+      }
+
+      .hero {
+        text-align: left;
+        color: #000; /* Set text color to black */
+        padding: 20px;
+      }
+
+      .login-form h2 {
+        color: #000; /* Set the "Login" heading color to black */
+      }
+
+      .login-form p {
+        color: #000; /* Set the "Don't have an account?" text color to black */
+      }
+
+      .slideshow-container {
+        margin: 20px auto;
+        max-width: 80%; /* Reduce the width to 80% of the screen */
+        height: 300px; /* Reduce the height to make it smaller */
+        overflow: hidden;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .slideshow {
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+        height: 100%; /* Ensure the slideshow takes the full height of the container */
+      }
+
+      .slideshow-item {
+        min-width: 100%; /* Each slide takes up the full width of the container */
+        text-align: center;
+        background-color: #222; /* Dark background for contrast */
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      .slideshow-item img {
+        width: 70%; /* Reduce the image width */
+        max-height: 200px; /* Limit the height of the image */
+        object-fit: cover; /* Ensure the image scales properly */
+        border-radius: 10px;
+        margin-bottom: 10px; /* Add spacing below the image */
+      }
+
+      .slideshow-item h3 {
+        font-size: 1.5em; /* Slightly smaller font size for the title */
+        margin: 10px 0;
+        color: #ff9a9e; /* Add a gradient-like color for the title */
+      }
+
+      .slideshow-item p {
+        font-size: 0.9em; /* Slightly smaller font size for the synopsis */
+        color: #ccc; /* Light gray for the synopsis */
+        max-width: 80%; /* Limit the width of the text */
+        line-height: 1.4; /* Improve readability */
+      }
     </style>
   </head>
   <body>
-    <header>
-      <h1>Top Anime Movies</h1>
-    </header>
-
+    <!-- Updated Navigation Bar -->
     <nav>
-      <a href="#" onclick="showSection('home')">Home</a>
-      <a href="#" onclick="showSection('favoritesSection')">Favorites</a>
-      <a href="#" onclick="showSection('contactSection')">Contact</a>
-      <a href="#" onclick="showSection('signupSection')">Sign Up</a>
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <!-- Logo and Website Name -->
+        <img src="https://i.pinimg.com/736x/0c/1b/7b/0c1b7b23e76d26632cdda94c750a64a0.jpg" alt="AniFlix Logo" style="width: 50px; height: 50px; border-radius: 50%;" />
+        <h1 style="font-size: 1.5em; margin: 0; font-family: 'Poppins', sans-serif; color: #333;">AniFlix</h1>
+
+        <!-- Navigation Links -->
+        <a href="#" onclick="showSection('home')">Home</a>
+        <div class="dropdown">
+          <a href="#" onclick="toggleDropdown()">Genres</a>
+          <div id="genresDropdown" class="dropdown-content hidden"></div>
+        </div>
+        <a href="#" onclick="showSection('favoritesSection')">Favorites</a>
+        <a href="#" onclick="showSection('contactSection')">Contact</a>
+        <a href="#" onclick="showSection('signupSection')">Sign Up</a>
+      </div>
+      <div style="margin-left: auto; display: flex; align-items: center;">
+        <div style="position: relative;">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Search movies..."
+            oninput="showSuggestions()"
+            style="width: 100%;"
+          />
+          <div id="suggestions" style="position: absolute; top: 100%; left: 0; width: 100%; background-color: #222; color: #fff; border: 1px solid #555; border-radius: 5px; max-height: 200px; overflow-y: auto; display: none; z-index: 1000;"></div>
+        </div>
+        <button id="search-button" onclick="searchMovies()">Search</button>
+      </div>
     </nav>
+
+    <div class="hero">
+      <h1>Welcome to AniFlix</h1>
+      <p>Your ultimate destination for anime movies!</p>
+    </div>
 
     <div class="container">
       <!-- Login Form -->
@@ -231,10 +533,14 @@
       <!-- Main Content -->
       <div id="mainContent" class="hidden">
         <div id="home">
-          <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
-            <input type="text" id="search-input" placeholder="Search movies..." />
-            <button id="search-button" onclick="searchMovies()">Search</button>
+          <!-- Slideshow Section -->
+          <div class="slideshow-container">
+            <div class="slideshow" id="movieSlideshow">
+              <!-- Slides will be dynamically added here -->
+            </div>
           </div>
+
+          <!-- Movies Section -->
           <div class="movies" id="movie-list"></div>
           <div class="pagination" id="pagination"></div>
         </div>
@@ -242,6 +548,11 @@
         <div class="favorites hidden" id="favoritesSection">
           <h2>Favorites</h2>
           <div class="movies" id="favorites"></div>
+        </div>
+
+        <div class="genres hidden" id="genresSection">
+          <h2>Genres</h2>
+          <div id="genresList" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
         </div>
 
         <div class="contact hidden" id="contactSection">
@@ -263,22 +574,17 @@
           <h2>Sign Up</h2>
           <form id="signupForm" onsubmit="event.preventDefault(); signUp();">
             <label for="signup-email">Email</label>
-            <input type="email" id="signup-email" required />
+            <input type="email" id="signup-email" placeholder="Email" required />
 
             <label for="signup-username">Username</label>
-            <input type="text" id="signup-username" required />
+            <input type="text" id="signup-username" placeholder="Username" required />
 
             <div class="password-container">
               <label for="signup-password">Password</label>
-              <input type="password" id="signup-password" required minlength="6" />
+              <input type="password" id="signup-password" placeholder="Password" minlength="6" />
               <span class="password-toggle" onclick="togglePassword('signup-password')">👁</span>
             </div>
 
-            <div class="password-container">
-              <label for="confirm-password">Confirm Password</label>
-              <input type="password" id="confirm-password" required minlength="6" />
-              <span class="password-toggle" onclick="togglePassword('confirm-password')">👁</span>
-            </div>
 
             <button type="submit">Sign Up</button>
             <p style="text-align: center; margin-top: 10px">
@@ -287,24 +593,23 @@
             </p>
           </form>
         </div>
-
-        <div class="modal" id="movieModal">
-          <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <img id="modalImage" src="" alt="Movie Image" />
-            <div class="modal-details">
-              <h2 id="modalTitle"></h2>
-              <p id="modalSynopsis"></p>
-              <button onclick="addToFavorites()">Add to Favorites</button>
-              <div style="margin-top: 15px">
-                <button onclick="likeMovie()" id="likeBtn">👍 Like (<span id="likeCount">0</span>)</button>
-                <button onclick="dislikeMovie()" id="dislikeBtn" style="margin-left: 10px">👎 Dislike (<span id="dislikeCount">0</span>)</button>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
+
+    <section id="detailsSection" style="padding: 20px; background-color: #1e1e2f; color: #fff; text-align: center; margin-top: 30px;">
+      <h2>About AniFlix</h2>
+      <p>
+        AniFlix is your ultimate destination for discovering and enjoying the best anime movies. 
+        Explore genres, add your favorites, and share your reactions with the community.
+      </p>
+      <p>
+        Built with love for anime fans, AniFlix brings you a curated collection of top-rated anime movies.
+        Stay tuned for more updates and features!
+      </p>
+      <p style="margin-top: 20px; font-size: 14px; color: #aaa;">
+        &copy; 2025 AniFlix. All rights reserved.
+      </p>
+    </section>
 
     <footer><p>&copy; 2025 Anime Hub</p></footer>
 
@@ -315,34 +620,111 @@
       let dislikeCounts = {};
       let userReactions = {};
       let currentPage = 1;
-      const moviesPerPage = 8;
+      const moviesPerPage = 15; // Set the number of movies per page to 15
       let users = [];
       let currentUser = null;
 
-      async function fetchMovies() {
-        const movieList = document.getElementById("movie-list");
-        const searchBtn = document.getElementById("search-button");
-        const searchInput = document.getElementById("search-input");
-        movieList.innerHTML = '<p id="loading-message">Loading movies, please wait...</p>';
-        searchBtn.disabled = true;
-        searchInput.disabled = true;
+      function sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
 
-        let page = 1;
-        try {
-          while (allMovies.length < 200) {
-            const res = await fetch(`https://api.jikan.moe/v4/top/anime?type=movie&page=${page}`);
-            const data = await res.json();
-            if (!data.data || data.data.length === 0) break;
-            allMovies = allMovies.concat(data.data);
-            page++;
+      async function fetchMovies() {
+        allMovies = [
+          {
+            title: "My Neighbor Totoro",
+            synopsis: "Two girls move to the countryside and meet a friendly forest spirit.",
+            images: {
+              jpg: {
+                image_url: "https://upload.wikimedia.org/wikipedia/en/0/0b/My_Neighbor_Totoro_-_Tonari_no_Totoro_%281988%29_theatrical_poster.jpg"
+              }
+            }
+          },
+          {
+            title: "Spirited Away",
+            synopsis: "A girl enters a magical world to save her parents.",
+            images: {
+              jpg: {
+                image_url: "https://upload.wikimedia.org/wikipedia/en/3/30/Spirited_Away_poster.JPG"
+              }
+            }
+          },
+          {
+            title: "Your Name",
+            synopsis: "Two teenagers share a magical connection that intertwines their lives.",
+            images: {
+              jpg: {
+                image_url: "https://upload.wikimedia.org/wikipedia/en/0/0b/Your_Name_poster.png"
+              }
+            }
           }
-          displayMovies(allMovies, 1);
-          searchBtn.disabled = false;
-          searchInput.disabled = false;
+        ];
+        console.log("Mock movies loaded:", allMovies);
+      }
+
+      async function fetchGenres() {
+        const genresList = document.getElementById("genresList");
+        genresList.innerHTML = '<p id="loading-message">Loading genres, please wait...</p>';
+
+        try {
+          const res = await fetch("https://api.jikan.moe/v4/genres/anime");
+          const data = await res.json();
+          genresList.innerHTML = "";
+
+          // Define the main/general genres you want to display first
+          const mainGenres = ["Action", "Adventure", "Fantasy", "Comedy", "Drama", "Romance", "Sci-Fi", "Horror"];
+
+          // Separate main genres and remaining genres
+          const filteredMainGenres = data.data.filter((genre) => mainGenres.includes(genre.name));
+          const remainingGenres = data.data.filter((genre) => !mainGenres.includes(genre.name));
+
+          // Display main genres
+          filteredMainGenres.forEach((genre) => {
+            const div = document.createElement("div");
+            div.style.padding = "10px 15px";
+            div.style.border = "1px solid #ccc";
+            div.style.borderRadius = "5px";
+            div.style.cursor = "pointer";
+            div.style.backgroundColor = "#f4f4f4";
+            div.innerText = genre.name;
+            div.onclick = () => filterMoviesByGenre(genre.mal_id);
+            genresList.appendChild(div);
+          });
+
+          // Add "Show More" button for remaining genres
+          if (remainingGenres.length > 0) {
+            const showMoreBtn = document.createElement("button");
+            showMoreBtn.innerText = "Show More";
+            showMoreBtn.style.marginTop = "10px";
+            showMoreBtn.onclick = () => {
+              remainingGenres.forEach((genre) => {
+                const div = document.createElement("div");
+                div.style.padding = "10px 15px";
+                div.style.border = "1px solid #ccc";
+                div.style.borderRadius = "5px";
+                div.style.cursor = "pointer";
+                div.style.backgroundColor = "#f4f4f4";
+                div.innerText = genre.name;
+                div.onclick = () => filterMoviesByGenre(genre.mal_id);
+                genresList.appendChild(div);
+              });
+              showMoreBtn.remove(); // Remove the button after expanding
+            };
+            genresList.appendChild(showMoreBtn);
+          }
         } catch (error) {
-          movieList.innerHTML = "<p>Error loading movies. Please try again later.</p>";
+          genresList.innerHTML = "<p>Error loading genres. Please try again later.</p>";
           console.error("Fetch error:", error);
         }
+      }
+
+      function filterMoviesByGenre(genreId) {
+        const filteredMovies = allMovies.filter((movie) =>
+          movie.genres.some((genre) => genre.mal_id === genreId)
+        );
+        displayMovies(filteredMovies, 1);
+
+        // Close the dropdown after selecting a genre
+        document.getElementById("genresDropdown").classList.add("hidden");
       }
 
       function displayMovies(movies, page = 1) {
@@ -355,19 +737,26 @@
         const end = start + moviesPerPage;
         const pageMovies = movies.slice(start, end);
 
+        // Display movies for the current page
         pageMovies.forEach((movie) => {
           const div = document.createElement("div");
           div.className = "movie";
           div.innerHTML = `<img src="${movie.images.jpg.image_url}" alt="${movie.title}"><p style="padding: 10px;">${movie.title}</p>`;
-          div.onclick = () => showModal(movie);
+          div.onclick = () => {
+            console.log(`Clicked on: ${movie.title}`); // Debugging log
+            showModal(movie);
+          };
           container.appendChild(div);
         });
 
+        // Calculate total pages
         const totalPages = Math.ceil(movies.length / moviesPerPage);
+
+        // Create pagination buttons
         for (let i = 1; i <= totalPages; i++) {
           const btn = document.createElement("button");
           btn.innerText = i;
-          if (i === page) btn.style.backgroundColor = "#772ce8";
+          if (i === page) btn.style.backgroundColor = "#772ce8"; // Highlight the current page
           btn.onclick = () => {
             currentPage = i;
             displayMovies(movies, currentPage);
@@ -390,8 +779,57 @@
         }
       }
 
+      function showSuggestions() {
+        const query = document.getElementById("search-input").value.trim().toLowerCase();
+        const suggestionsContainer = document.getElementById("suggestions");
+
+        // Clear previous suggestions
+        suggestionsContainer.innerHTML = "";
+
+        if (query === "") {
+          suggestionsContainer.style.display = "none";
+          return;
+        }
+
+        // Filter movies based on the query
+        const filteredMovies = allMovies.filter((movie) =>
+          movie.title.toLowerCase().includes(query)
+        );
+
+        if (filteredMovies.length === 0) {
+          // Show "No movies found" if no matches
+          suggestionsContainer.innerHTML = "<p style='padding: 10px; text-align: center; color: #aaa;'>No movies found</p>";
+        } else {
+          // Display matching movies
+          filteredMovies.forEach((movie) => {
+            const suggestion = document.createElement("div");
+            suggestion.style.display = "flex";
+            suggestion.style.alignItems = "center";
+            suggestion.style.padding = "10px";
+            suggestion.style.cursor = "pointer";
+            suggestion.style.borderBottom = "1px solid #555";
+
+            suggestion.innerHTML = `
+              <img src="${movie.images.jpg.image_url}" alt="${movie.title}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px; margin-right: 10px;">
+              <span>${movie.title}</span>
+            `;
+
+            // Add click event to show the movie modal
+            suggestion.onclick = () => {
+              showModal(movie);
+              suggestionsContainer.style.display = "none"; // Hide suggestions after selection
+            };
+
+            suggestionsContainer.appendChild(suggestion);
+          });
+        }
+
+        // Show the suggestions container
+        suggestionsContainer.style.display = "block";
+      }
+
       function showSection(sectionId) {
-        const sections = ["home", "favoritesSection", "contactSection", "signupSection"];
+        const sections = ["home", "genresSection", "favoritesSection", "contactSection", "signupSection"];
         sections.forEach((id) => document.getElementById(id).classList.add("hidden"));
         document.getElementById(sectionId).classList.remove("hidden");
 
@@ -399,6 +837,41 @@
           const searchInput = document.getElementById("search-input");
           searchInput.value = "";
           displayMovies(allMovies, 1);
+        } else if (sectionId === "genresSection") {
+          fetchGenres();
+        }
+      }
+
+      async function toggleDropdown() {
+        const dropdown = document.getElementById("genresDropdown");
+        dropdown.classList.toggle("hidden");
+
+        // If the dropdown is already populated, don't fetch again
+        if (dropdown.innerHTML.trim() !== "") return;
+
+        dropdown.innerHTML = '<p id="loading-message">Loading genres...</p>';
+
+        try {
+          const res = await fetch("https://api.jikan.moe/v4/genres/anime");
+          const data = await res.json();
+          dropdown.innerHTML = "";
+
+          // Define the main/general genres you want to display first
+          const mainGenres = ["Action", "Adventure", "Fantasy", "Comedy", "Drama", "Romance", "Sci-Fi", "Horror"];
+
+          // Filter genres to include only the main ones
+          const filteredGenres = data.data.filter((genre) => mainGenres.includes(genre.name));
+
+          // Populate the dropdown with genres
+          filteredGenres.forEach((genre) => {
+            const link = document.createElement("a");
+            link.innerText = genre.name;
+            link.onclick = () => filterMoviesByGenre(genre.mal_id);
+            dropdown.appendChild(link);
+          });
+        } catch (error) {
+          dropdown.innerHTML = "<p>Error loading genres. Please try again later.</p>";
+          console.error("Fetch error:", error);
         }
       }
 
@@ -409,6 +882,10 @@
         document.getElementById("modalImage").src = movie.images.jpg.image_url;
         document.getElementById("modalSynopsis").innerText =
           movie.synopsis || "No synopsis available.";
+
+        // Display up to 3 genres
+        const genres = movie.genres.slice(0, 3).map((genre) => genre.name).join(", ");
+        document.getElementById("modalGenres").innerText = genres || "No genres available.";
 
         likeCounts[id] = likeCounts[id] || 0;
         dislikeCounts[id] = dislikeCounts[id] || 0;
@@ -430,7 +907,10 @@
           }
         }
 
-        document.getElementById("movieModal").style.display = "block";
+        // Ensure the modal is visible
+        const modal = document.getElementById("movieModal");
+        modal.style.display = "block";
+        modal.classList.remove("hidden"); // Remove the 'hidden' class if it exists
       }
 
       function closeModal() {
@@ -444,10 +924,24 @@
         }
 
         const favContainer = document.getElementById("favorites");
+
+        // Check if the movie is already in the favorites
+        const existingFavorite = Array.from(favContainer.children).find(
+          (child) => child.dataset.movieId === String(selectedMovie.mal_id)
+        );
+
+        if (existingFavorite) {
+          alert("This movie is already in your favorites!");
+          return;
+        }
+
+        // Add the movie to favorites
         const div = document.createElement("div");
         div.className = "movie";
+        div.dataset.movieId = selectedMovie.mal_id; // Store the movie ID for future checks
         div.innerHTML = `<img src="${selectedMovie.images.jpg.image_url}" alt="${selectedMovie.title}"><p style="padding: 10px;">${selectedMovie.title}</p>`;
         favContainer.appendChild(div);
+
         closeModal();
       }
 
@@ -589,6 +1083,52 @@
         document.getElementById("loginForm").classList.remove("hidden");
         document.getElementById("mainContent").classList.add("hidden");
       }
+
+      function createSlideshow() {
+        const slideshow = document.getElementById("movieSlideshow");
+        const randomMovies = allMovies.sort(() => 0.5 - Math.random()).slice(0, 5); // Get 5 random movies
+
+        console.log("Random Movies for Slideshow:", randomMovies); // Debug: Check random movies
+
+        randomMovies.forEach((movie) => {
+          const slide = document.createElement("div");
+          slide.className = "slideshow-item";
+          slide.innerHTML = `
+            <img src="${movie.images.jpg.image_url}" alt="${movie.title}">
+            <h3>${movie.title}</h3>
+            <p>${movie.synopsis ? movie.synopsis.substring(0, 100) + "..." : "No synopsis available."}</p>
+          `;
+          slideshow.appendChild(slide);
+        });
+
+        let currentIndex = 0;
+
+        setInterval(() => {
+          currentIndex = (currentIndex + 1) % randomMovies.length;
+          slideshow.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }, 3000); // Switch slides every 3 seconds
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        fetchMovies().then(() => {
+          console.log(allMovies); // Debug: Check if movies are loaded
+          createSlideshow(); // Initialize the slideshow when the page loads
+        });
+      });
+
+      document.getElementById("search-input").addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault(); // Prevent the default form submission behavior
+          searchMovies(); // Trigger the search function
+        }
+      });
+
+      document.getElementById("password").addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault(); // Prevent the default form submission behavior
+          login(); // Trigger the login function
+        }
+      });
     </script>
   </body>
 </html>
